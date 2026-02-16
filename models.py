@@ -1,3 +1,4 @@
+from odoo.exceptions import ValidationError
 from odoo import models, fields, api
 
 class Course(models.Model):
@@ -9,6 +10,16 @@ class Course(models.Model):
         ondelete='set null', string="Responsible", index=True)
     session_ids = fields.One2many(
         'openacademy.session', 'course_id', string="Sessions")
+    _sql_constraints = [
+        ('name_description_check',
+         'CHECK(name != description)',
+         "El título del curso no puede ser igual a la descripción."),
+
+        ('name_unique',
+         'UNIQUE(name)',
+         "El título del curso debe ser único."),
+    ]
+
 
 class Session(models.Model):
     _name = 'openacademy.session'
@@ -18,6 +29,7 @@ class Session(models.Model):
     duration = fields.Float(digits=(6, 2), help="Duration in days")
     seats = fields.Integer(string="Number of seats")
     active = fields.Boolean(default=True)
+    color = fields.Integer()
 
     instructor_id = fields.Many2one('res.partner', string="Instructor",
         domain=['|', ('instructor', '=', True),
@@ -52,3 +64,9 @@ class Session(models.Model):
                     'message': "Increase seats or remove excess attendees",
                 },
             }
+        
+    @api.constrains('instructor_id', 'attendee_ids')
+    def _check_instructor_not_in_attendees(self):
+        for r in self:
+            if r.instructor_id and r.instructor_id in r.attendee_ids:
+                raise ValidationError("Un instructor no puede ser asistente de su propia sesión.")
