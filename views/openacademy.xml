@@ -3,11 +3,9 @@
         <record model="ir.actions.act_window" id="course_list_action">
             <field name="name">Courses</field>
             <field name="res_model">openacademy.course</field>
-            <field name="view_type">form</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Create the first course
-                </p>
+                <p class="oe_view_nocontent_create">Create the first course</p>
             </field>
         </record>
 
@@ -33,10 +31,10 @@
                             </page>
                             <page string="Sessions">
                                 <field name="session_ids">
-                                    <tree string="Registered sessions">
+                                    <list string="Registered sessions">
                                         <field name="name"/>
                                         <field name="instructor_id"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>
@@ -95,11 +93,31 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="session_calendar_view">
+            <field name="name">session.calendar</field>
+            <field name="model">openacademy.session</field>
+            <field name="arch" type="xml">
+                <calendar string="Session Calendar" date_start="start_date" color="instructor_id">
+                    <field name="name"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="openacademy_session_graph_view">
+            <field name="name">openacademy.session.graph</field>
+            <field name="model">openacademy.session</field>
+            <field name="arch" type="xml">
+                <graph string="Participación por Curso">
+                    <field name="course_id"/>
+                    <field name="attendee_ids" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
         <record model="ir.actions.act_window" id="session_list_action">
             <field name="name">Sessions</field>
             <field name="res_model">openacademy.session</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode">list,form,calendar,graph</field>
         </record>
 
         <menuitem id="session_menu" name="Sessions"
