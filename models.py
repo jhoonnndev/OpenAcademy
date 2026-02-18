@@ -1,5 +1,6 @@
 from datetime import timedelta
 from odoo import models, fields, api, exceptions, _
+from odoo.exceptions import ValidationError
 
 class Course(models.Model):
     _name = 'openacademy.course'

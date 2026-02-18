@@ -1,5 +1,5 @@
 <odoo>
-
+    <data>
         <record model="ir.actions.act_window" id="course_list_action">
             <field name="name">Courses</field>
             <field name="res_model">openacademy.course</field>
@@ -51,12 +51,7 @@
                 <search>
                     <field name="name"/>
                     <field name="description"/>
-                     <filter name="my_courses" string="My Courses"
-                            domain="[('responsible_id', '=', uid)]"/>
-                    <group string="Group By">
-                    <filter name="by_responsible" string="Responsible"
-                            context="{'group_by': 'responsible_id'}"/>
-                    </group>
+
                 </search>
             </field>
         </record>
@@ -185,7 +180,7 @@
                 </list>
             </field>
         </record>
-
+    </data>
         
 
 </odoo>
