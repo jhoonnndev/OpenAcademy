@@ -4,6 +4,7 @@
             <field name="name">Courses</field>
             <field name="res_model">openacademy.course</field>
             <field name="view_mode">list,form</field>
+            <field name="context" eval="{'search_default_my_courses': 1}"/>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Create the first course</p>
             </field>
@@ -50,6 +51,12 @@
                 <search>
                     <field name="name"/>
                     <field name="description"/>
+                     <filter name="my_courses" string="My Courses"
+                            domain="[('responsible_id', '=', uid)]"/>
+                    <group string="Group By">
+                    <filter name="by_responsible" string="Responsible"
+                            context="{'group_by': 'responsible_id'}"/>
+                    </group>
                 </search>
             </field>
         </record>
@@ -85,9 +92,10 @@
             <field name="name">session.list</field>
             <field name="model">openacademy.session</field>
             <field name="arch" type="xml">
-                <list string="Session list">
+                <list string="Session list" decoration-info="duration &lt;5" decoration-danger="duration&gt;=5">
                     <field name="name"/>
                     <field name="course_id"/>
+                    <field name="duration" invisible="1"/>
                     <field name="taken_seats" widget="progressbar"/>
                 </list>
             </field>
@@ -97,7 +105,7 @@
             <field name="name">session.calendar</field>
             <field name="model">openacademy.session</field>
             <field name="arch" type="xml">
-                <calendar string="Session Calendar" date_start="start_date" color="instructor_id">
+                <calendar string="Session Calendar" date_start="start_date" date_stop="end_date" color="instructor_id">
                     <field name="name"/>
                 </calendar>
             </field>
@@ -109,32 +117,54 @@
         <field name="arch" type="xml">
             <graph string="Participación por Curso">
                 <field name="course_id"/>
-                <field name="seats" type="measure"/> </graph>
+                <field name="attendes_count" type="measure"/> </graph>
         </field>
         </record>
 
-        <record model="ir.ui.view" id="view_openacad_session_kanban">
-                <field name="name">openacademy.session.kanban</field>
-                <field name="model">openacademy.session</field>
-                <field name="arch" type="xml">
-                    <kanban default_group_by="course_id" records_draggable="true">
-                        <field name="color"/>
-                        <templates>
-                            <t t-name="card" class="oe_kanban_global_click">
-                                <div class="oe_kanban_details">
-                                    <strong class="o_kanban_record_title">
-                                        <field name="name"/>
-                                    </strong>
-                                    <div class="o_kanban_tags_section"/>
-                                    <ul>
-                                        <li>Date: <field name="start_date"/></li>
-                                        <li>Duration: <field name="duration"/> days</li>
-                                    </ul>
+         <record model="ir.ui.view" id="view_openacad_session_kanban">
+            <field name="name">openacad.session.kanban</field>
+            <field name="model">openacademy.session</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="course_id">
+                    <field name="color"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div
+                                    t-attf-class="oe_kanban_color_{{kanban_getcolor(record.color.raw_value)}}
+                                                  oe_kanban_global_click_edit oe_semantic_html_override
+                                                  oe_kanban_card {{record.group_fancy==1 ? 'oe_kanban_card_fancy' : ''}}">
+                                <div class="oe_dropdown_kanban">
+                                    <!-- dropdown menu -->
+                                    <div class="oe_dropdown_toggle">
+                                        <i class="fa fa-bars fa-lg"/>
+                                        <ul class="oe_dropdown_menu">
+                                            <li>
+                                                <a type="delete">Delete</a>
+                                            </li>
+                                            <li>
+                                                <ul class="oe_kanban_colorpicker"
+                                                    data-field="color"/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="oe_clear"></div>
                                 </div>
-                            </t>
-                        </templates>
-                    </kanban>
-                </field>
+                                <div t-attf-class="oe_kanban_content">
+                                    <!-- title -->
+                                    Session name:
+                                    <field name="name"/>
+                                    <br/>
+                                    Start date:
+                                    <field name="start_date"/>
+                                    <br/>
+                                    duration:
+                                    <field name="duration"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
         </record>
 
         <record model="ir.actions.act_window" id="session_list_action">

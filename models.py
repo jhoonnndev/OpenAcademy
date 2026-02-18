@@ -34,6 +34,8 @@ class Course(models.Model):
          "El título del curso debe ser único."),
     ]
 
+    
+
 
 class Session(models.Model):
     _name = 'openacademy.session'
@@ -46,8 +48,8 @@ class Session(models.Model):
     color = fields.Integer()
 
     instructor_id = fields.Many2one('res.partner', string="Instructor",
-        domain=['|', ('instructor', '=', True),
-                     ('category_id.name', 'ilike', "Teacher")])
+        domain=[('instructor', '=', True)])
+        
     course_id = fields.Many2one('openacademy.course',
         ondelete='cascade', string="Course", required=True)
     attendee_ids = fields.Many2many('res.partner', string="Attendees")
