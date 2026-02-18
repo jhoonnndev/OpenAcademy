@@ -20,6 +20,8 @@
             <field name="res_model">res.partner</field>
             <field name="view_mode">list,form</field>
         </record>
+
+        
         <menuitem id="configuration_menu" name="Configuration"
                   parent="main_openacademy_menu"/>
         <menuitem id="contact_menu" name="Contacts"

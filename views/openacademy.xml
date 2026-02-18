@@ -134,7 +134,6 @@
                                                   oe_kanban_global_click_edit oe_semantic_html_override
                                                   oe_kanban_card {{record.group_fancy==1 ? 'oe_kanban_card_fancy' : ''}}">
                                 <div class="oe_dropdown_kanban">
-                                    <!-- dropdown menu -->
                                     <div class="oe_dropdown_toggle">
                                         <i class="fa fa-bars fa-lg"/>
                                         <ul class="oe_dropdown_menu">
@@ -150,7 +149,6 @@
                                     <div class="oe_clear"></div>
                                 </div>
                                 <div t-attf-class="oe_kanban_content">
-                                    <!-- title -->
                                     Session name:
                                     <field name="name"/>
                                     <br/>
